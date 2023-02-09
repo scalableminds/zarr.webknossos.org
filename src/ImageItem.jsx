@@ -17,21 +17,33 @@ export default function ImageItem({ source }) {
       let attrs = await node.attrs.asObject();
       console.log("attrs", attrs);
 
+      let keywords = [];
+      let wells;
+      let fields;
+
+      // Check if we have a plate or bioformats2raw.layout...
+      let redirectSource;
       if (attrs.plate) {
-        return;
+        fields = attrs.plate.field_count;
+        wells = attrs.plate.wells.length;
+        let wellPath = source + "/" + attrs.plate.wells[0].path;
+        let wellJson = await fetch(wellPath + "/.zattrs").then(rsp => rsp.json());
+        redirectSource = wellPath + "/" + wellJson.well.images[0].path;
       } else if (attrs['bioformats2raw.layout']) {
         // Use the first image at /0
-        source = source + "/0";
-        config = {source}
+        redirectSource = source + "/0";
+      }
+      if (redirectSource) {
+        // reload with new source
+        config = {source: redirectSource}
         node = await open(config.source);
         attrs = await node.attrs.asObject();
-        console.log("attrs", attrs);
+        keywords.push("bioformats2raw.layout");
       }
 
       const axes = getNgffAxes(attrs.multiscales);
 
       let layerData = await loadOmeroMultiscales(config, node, attrs);
-      console.log("layerData", layerData);
 
       let shape = layerData.loader[0]._data.meta.shape;
 
@@ -57,6 +69,9 @@ export default function ImageItem({ source }) {
         dims: dims,
         axes: axes.map((axis) => axis.name).join(""),
         version: attrs.multiscales?.[0]?.version,
+        keywords,
+        wells,
+        fields
       });
     };
 
@@ -81,6 +96,9 @@ export default function ImageItem({ source }) {
       </td>
       {sizes}
       <td>{imgInfo.axes}</td>
+      <td>{imgInfo.wells}</td>
+      <td>{imgInfo.fields}</td>
+      <td>{imgInfo?.keywords?.join(", ")}</td>
       <td>
         <div style={wrapperStyle}>
           <Viewer layersData={layers} />

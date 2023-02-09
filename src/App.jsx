@@ -23,6 +23,9 @@ export default function App() {
           <th>sizeC</th>
           <th>sizeT</th>
           <th>Axes</th>
+          <th>Wells</th>
+          <th>Fields</th>
+          <th>keywords</th>
         </tr>
         {items}
       </tbody>
