@@ -3,14 +3,11 @@ import React from "react";
 
 import ImageItem from "./ImageItem";
 
+import zarr_samples_json from "../public/zarr_samples.json";
+
 // DeckGL react component
 export default function App() {
-  let sources = [
-    "https://uk1s3.embassy.ebi.ac.uk/idr/zarr/v0.4/idr0048A/9846152.zarr/",
-    "https://uk1s3.embassy.ebi.ac.uk/idr/zarr/v0.3/9836842.zarr",
-    "https://uk1s3.embassy.ebi.ac.uk/idr/zarr/v0.2/6001240.zarr",
-    "https://uk1s3.embassy.ebi.ac.uk/idr/zarr/v0.1/4495402.zarr"
-  ]
+  let sources = zarr_samples_json.urls;
 
   let items = sources.map((source) => <ImageItem key={source} source={source}/>);
 
