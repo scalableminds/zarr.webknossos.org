@@ -13,10 +13,21 @@ export default function ImageItem({ source }) {
 
   React.useEffect(() => {
     const fn = async function () {
-      const node = await open(config.source);
-
-      const attrs = await node.attrs.asObject();
+      let node = await open(config.source);
+      let attrs = await node.attrs.asObject();
       console.log("attrs", attrs);
+
+      if (attrs.plate) {
+        return;
+      } else if (attrs['bioformats2raw.layout']) {
+        // Use the first image at /0
+        source = source + "/0";
+        config = {source}
+        node = await open(config.source);
+        attrs = await node.attrs.asObject();
+        console.log("attrs", attrs);
+      }
+
       const axes = getNgffAxes(attrs.multiscales);
 
       let layerData = await loadOmeroMultiscales(config, node, attrs);
@@ -59,9 +70,7 @@ export default function ImageItem({ source }) {
   };
 
   let sizes = ["x", "y", "z", "c", "t"].map((dim) => (
-    <td key={dim}>
-      {imgInfo?.dims?.[dim]}
-    </td>
+    <td key={dim}>{imgInfo?.dims?.[dim]}</td>
   ));
 
   return (
