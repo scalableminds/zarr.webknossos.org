@@ -89,11 +89,20 @@ export default function ImageItem({ source }) {
     <td key={dim}>{imgInfo?.dims?.[dim]}</td>
   ));
 
+  let link_style = {
+    maxWidth: 150,
+    display: "block",
+    textOverflow: "ellipsis",
+    direction: "rtl",
+    whiteSpace: "nowrap",
+    overflow: "hidden"
+  }
+
   return (
     <tr>
       <td>{imgInfo.version}</td>
       <td>
-        <a href="{source}">source</a>
+        <a title={source} style={link_style} href={source}>{source}</a>
         <OpenWith source={source} />
       </td>
       {sizes}
