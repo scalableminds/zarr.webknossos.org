@@ -1,6 +1,7 @@
 import React from "react";
 
 import Viewer from "./Viewer";
+import OpenWith from "./OpenWith";
 import { loadOmeroMultiscales, open, getNgffAxes } from "./util";
 
 // DeckGL react component
@@ -93,6 +94,7 @@ export default function ImageItem({ source }) {
       <td>{imgInfo.version}</td>
       <td>
         <a href="{source}">source</a>
+        <OpenWith source={source} />
       </td>
       {sizes}
       <td>{imgInfo.axes}</td>

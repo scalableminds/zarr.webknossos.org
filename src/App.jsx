@@ -25,7 +25,8 @@ export default function App() {
           <th>Axes</th>
           <th>Wells</th>
           <th>Fields</th>
-          <th>keywords</th>
+          <th>Keywords</th>
+          <th>Thumbnail</th>
         </tr>
         {items}
       </tbody>
