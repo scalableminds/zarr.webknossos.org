@@ -2,6 +2,7 @@ import React from "react";
 
 import Viewer from "./Viewer";
 import OpenWith from "./OpenWith";
+import CopyButton from "./CopyButton";
 import { loadOmeroMultiscales, open, getNgffAxes } from "./util";
 
 // DeckGL react component
@@ -103,6 +104,7 @@ export default function ImageItem({ source }) {
       <td>{imgInfo.version}</td>
       <td>
         <a title={source} style={link_style} href={source}>{source}</a>
+        <CopyButton source={source} />
         <OpenWith source={source} />
       </td>
       {sizes}

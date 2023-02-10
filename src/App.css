@@ -35,3 +35,6 @@ tbody tr:nth-child(odd) {
   max-height: 20px;
   margin: 2px;
 }
+
+@-webkit-keyframes seesaw { from { transform: rotate(-0.05turn) } to { transform: rotate(0.05turn); }  }
+@keyframes seesaw { from { transform: rotate(-0.05turn) } to { transform: rotate(0.05turn); }  }
