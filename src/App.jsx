@@ -19,10 +19,13 @@ export default function App() {
       setDatasets(
         publications.flatMap((pub) => [
           ...pub.datasets
-            .filter((dataset) => dataset.isActive)
+            .filter((dataset) => dataset.isActive && dataset.isPublic)
             .map((ds) => ({ ...ds, publication: pub })),
           ...pub.annotations
-            .filter((annotation) => annotation.dataSet.isActive)
+            .filter(
+              (annotation) =>
+                annotation.dataSet.isActive && annotation.dataSet.isPublic
+            )
             .map((annotation) => ({ ...annotation.dataSet, publication: pub })),
         ])
       );
