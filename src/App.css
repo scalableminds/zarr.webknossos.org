@@ -1,3 +1,22 @@
+@font-face {
+  font-family: "Nunito";
+  src: local("Nunito"), url("https://static.webknossos.org/assets/fonts/Nunito-VariableFont_wght.ttf") format("truetype");
+  font-style: normal;
+}
+
+:root {
+  font-family: Nunito, -apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui, helvetica neue, helvetica, Cantarell, Ubuntu, roboto, noto, arial, sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
@@ -26,6 +45,9 @@ td {
   border: 1px solid #e8e8e8;
 }
 
+tbody tr:nth-child(odd) {
+  background-color: #ffffff;
+}
 tbody tr:nth-child(odd) {
   background-color: #f9f9f9;
 }

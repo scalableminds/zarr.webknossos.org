@@ -1,7 +1,6 @@
 import React from "react";
 
-export default function CopyButton({ source }) {
-
+export default function CopyButton({ url }) {
   let [shaking, setShaking] = React.useState(false);
 
   function copyTextToClipboard() {
@@ -9,7 +8,7 @@ export default function CopyButton({ source }) {
     // Place in the top-left corner of screen regardless of scroll position.
     textArea.style.position = "fixed";
 
-    textArea.value = source;
+    textArea.value = url;
 
     document.body.appendChild(textArea);
     textArea.focus();
@@ -38,15 +37,20 @@ export default function CopyButton({ source }) {
   let buttonStyle = {
     background: "transparent",
     border: "none",
-    padding: "0 2px"
+    padding: "0 2px",
+    cursor: "pointer",
   };
   if (shaking) {
     // NB: seesaw is defined in global App.css
     buttonStyle["animation"] = "0.1s linear 0s infinite alternate seesaw";
   }
-  
+
   return (
-    <button title="Copy" style={buttonStyle} onClick={copyTextToClipboard}>
+    <button
+      title="Copy OME-Zarr URL"
+      style={buttonStyle}
+      onClick={copyTextToClipboard}
+    >
       <img src="/copy_icon.png" />
     </button>
   );
