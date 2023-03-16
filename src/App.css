@@ -80,6 +80,7 @@ header h1 {
   color: #4D4D4D;
   text-decoration-thickness: 1px;
   text-underline-offset: 2px;
+  text-decoration-color: #CBCBCB;
 }
 
 .publication .datasets {
