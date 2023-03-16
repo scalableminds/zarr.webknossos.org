@@ -34,24 +34,19 @@ export default function CopyButton({ url }) {
     }
   }
 
-  let buttonStyle = {
-    background: "transparent",
-    border: "none",
-    padding: "0 2px",
-    cursor: "pointer",
-  };
-  if (shaking) {
-    // NB: seesaw is defined in global App.css
-    buttonStyle["animation"] = "0.1s linear 0s infinite alternate seesaw";
-  }
+  const buttonStyle = shaking
+    ? // NB: seesaw is defined in global App.css
+      { animation: "0.1s linear 0s infinite alternate seesaw" }
+    : {};
 
   return (
     <button
       title="Copy OME-Zarr URL"
+      className="zarr-button"
       style={buttonStyle}
       onClick={copyTextToClipboard}
     >
-      <img src="/copy_icon.png" />
+      <img src="/copy.svg" /> Copy Zarr URL
     </button>
   );
 }

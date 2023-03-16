@@ -1,11 +1,43 @@
 /// app.js
 import React from "react";
+import ReactMarkdown from "react-markdown";
+import remarkBreaks from "remark-breaks";
 
 import ImageItem from "./ImageItem";
 
+function Publication({ publication }) {
+  const datasets = [
+    ...publication.datasets.filter(
+      (dataset) => dataset.isActive && dataset.isPublic
+    ),
+    ...publication.annotations
+      .filter(
+        (annotation) =>
+          annotation.dataSet.isActive && annotation.dataSet.isPublic
+      )
+      .map((annotation) => annotation.dataSet),
+  ];
+
+  return (
+    <div className="publication">
+      <h2>{publication.title}</h2>
+
+      <ReactMarkdown remarkPlugins={[remarkBreaks]}>
+        {publication.description}
+      </ReactMarkdown>
+
+      <div className="datasets">
+        {datasets.map((dataset, i) => (
+          <ImageItem key={i} dataset={dataset} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // DeckGL react component
 export default function App() {
-  const [datasets, setDatasets] = React.useState([]);
+  const [publications, setPublications] = React.useState([]);
 
   React.useEffect(() => {
     (async () => {
@@ -16,44 +48,34 @@ export default function App() {
         (a, b) => b.publicationDate - a.publicationDate
       );
 
-      setDatasets(
-        publications.flatMap((pub) => [
-          ...pub.datasets
-            .filter((dataset) => dataset.isActive && dataset.isPublic)
-            .map((ds) => ({ ...ds, publication: pub })),
-          ...pub.annotations
-            .filter(
-              (annotation) =>
-                annotation.dataSet.isActive && annotation.dataSet.isPublic
-            )
-            .map((annotation) => ({ ...annotation.dataSet, publication: pub })),
-        ])
-      );
+      setPublications(publications);
     })();
   }, []);
 
-  let items = datasets.map((dataset, i) => (
-    <ImageItem key={i} dataset={dataset} />
-  ));
-
   return (
     <>
-      <img src="/wk-logo.svg" alt="WEBKNOSSOS" style={{ maxWidth: 200 }} />
-      <h1>OME-Zarr Gallery</h1>
-      {datasets.length > 0 && (
-        <>
-          <table>
-            <tbody>
-              <tr>
-                <th>URL</th>
-                <th>Size</th>
-                <th>Voxel size</th>
-                <th>Publication</th>
-                <th>Thumbnail</th>
-              </tr>
-              {items}
-            </tbody>
-          </table>
+      <header>
+        <h1>OME-Zarr Gallery</h1>
+      </header>
+      <div id="banner">
+        <a href="https://webknossos.org" style={{ lineHeight: 0 }}>
+          <img src="/wk-logo.svg" alt="WEBKNOSSOS" />
+        </a>
+      </div>
+
+      <div id="container">
+        {publications.length > 0 ? (
+          <>
+            {publications.map((publication, i) => (
+              <Publication key={i} publication={publication} />
+            ))}
+          </>
+        ) : (
+          <p>Loading…</p>
+        )}
+      </div>
+      {publications.length > 0 && (
+        <footer>
           <p style={{ fontSize: "0.8em" }}>
             scalable minds {new Date().getFullYear()} &bull;{" "}
             <a href="https://webknossos.org/imprint">Imprint</a> &bull;{" "}
@@ -61,10 +83,16 @@ export default function App() {
           </p>
           <p style={{ fontSize: "0.8em" }}>
             OME and its associated logo are trademarks of Glencoe Software Inc.,
+            <br />
             which holds these marks to protect them on behalf of the OME
             community.
           </p>
-        </>
+          <p>
+            <a href="https://webknossos.org">
+              <img src="/wk-logo.svg" alt="WEBKNOSSOS" style={{ width: 175 }} />
+            </a>
+          </p>
+        </footer>
       )}
     </>
   );

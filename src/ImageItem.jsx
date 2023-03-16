@@ -1,8 +1,5 @@
 import React from "react";
-import ReactMarkdown from "react-markdown";
-import remarkBreaks from "remark-breaks";
 
-import WkButton from "./WkButton";
 import CopyButton from "./CopyButton";
 
 function formatNumberToLength(numberInNm) {
@@ -103,29 +100,34 @@ export default function ImageItem({ dataset }) {
   const wkUrl = `https://webknossos.org/datasets/${dataset.owningOrganization}/${dataset.name}`;
 
   return (
-    <tr>
-      <td>
-        <WkButton url={wkUrl} />
-        <CopyButton url={zarrUrl} />
-      </td>
-      <td>{getDatasetExtentAsString(colorLayer, dataset.dataSource.scale)}</td>
-      <td>{formatScale(dataset.dataSource.scale)}</td>
-      <td>
-        <strong>{dataset.publication.title}</strong>
-        <br />
-        <ReactMarkdown remarkPlugins={[remarkBreaks]}>
-          {dataset.publication.description}
-        </ReactMarkdown>
-      </td>
-      <td>
-        <img
-          src={`https://webknossos.org/api/datasets/${encodeURIComponent(
-            dataset.owningOrganization
-          )}/${encodeURIComponent(dataset.name)}/layers/${encodeURIComponent(
-            colorLayer.name
-          )}/thumbnail?w=200&h=200`}
-        />
-      </td>
-    </tr>
+    <div className="dataset-item">
+      <div className="dataset-item-thumbnail-wrapper">
+        <a href={wkUrl}>
+          <img
+            src={`https://webknossos.org/api/datasets/${encodeURIComponent(
+              dataset.owningOrganization
+            )}/${encodeURIComponent(dataset.name)}/layers/${encodeURIComponent(
+              colorLayer.name
+            )}/thumbnail?w=200&h=200`}
+          />
+        </a>
+      </div>
+      <div className="dataset-item-content">
+        <div>
+          <h3>{dataset.name}</h3>
+          <p>
+            {getDatasetExtentAsString(colorLayer, dataset.dataSource.scale)}
+            <br />
+            {formatScale(dataset.dataSource.scale)}
+          </p>
+          <p>
+            <a className="wk-button" title="Open in WEBKNOSSOS" href={wkUrl}>
+              <img src="/wk.svg" /> Open dataset
+            </a>
+            <CopyButton url={zarrUrl} />
+          </p>
+        </div>
+      </div>
+    </div>
   );
 }
