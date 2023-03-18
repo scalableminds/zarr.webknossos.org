@@ -113,20 +113,18 @@ export default function ImageItem({ dataset }) {
         </a>
       </div>
       <div className="dataset-item-content">
-        <div>
-          <h3>{dataset.name}</h3>
-          <p>
-            {getDatasetExtentAsString(colorLayer, dataset.dataSource.scale)}
-            <br />
-            {formatScale(dataset.dataSource.scale)}
-          </p>
-          <p>
-            <a className="wk-button" title="Open in WEBKNOSSOS" href={wkUrl}>
-              <img src="/wk.svg" /> Open dataset
-            </a>
-            <CopyButton url={zarrUrl} />
-          </p>
-        </div>
+        <h3>{dataset.name}</h3>
+        <p>
+          {getDatasetExtentAsString(colorLayer, dataset.dataSource.scale)}
+          <br />
+          {formatScale(dataset.dataSource.scale)}
+        </p>
+        <p>
+          <a className="wk-button" title="Open in WEBKNOSSOS" href={wkUrl}>
+            <img src="/wk.svg" /> Open dataset
+          </a>
+          <CopyButton url={zarrUrl} />
+        </p>
       </div>
     </div>
   );

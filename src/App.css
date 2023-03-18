@@ -97,26 +97,51 @@ header h1 {
   padding: 30px;
   width: calc(50% - 40px);
   margin: 20px;
+  align-items: center;
 }
 
-@media(max-width: 1300px) {
+@media(max-width: 1000px) {
+  .publication .datasets {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
   .dataset-item {
     width: 100%;
+    margin: 20px 0;
+  }
+}
+
+@media(max-width: 500px) {
+  .dataset-item {
+    display: block;
   }
 }
 
 .dataset-item .dataset-item-thumbnail-wrapper {
+  position: relative;
   width: 200px;
   height: 200px;
+  max-width: 30vw;
+  max-height: 30vw;
+}
+.dataset-item .dataset-item-thumbnail-wrapper img {
+  width: 100%;
+  height: 100%;
 }
 .dataset-item .dataset-item-content {
   flex: 1;
   min-width: 0;
   margin-left: 30px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
 }
+
+@media(max-width: 500px) {
+  .dataset-item .dataset-item-content {
+    margin-left: 0;
+  }
+}
+
+
 .dataset-item .dataset-item-content h3 {
   font-size: 14px;
   font-weight: 300;
@@ -145,6 +170,7 @@ header h1 {
   background-color: #5660FF;
   color: #EBEBEB;
   margin-right: 10px;
+  margin-bottom: 10px;
 }
 .dataset-item .dataset-item-content .wk-button:hover {
   background-color: #828af6;
