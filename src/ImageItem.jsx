@@ -2,25 +2,43 @@ import React from "react";
 
 import CopyButton from "./CopyButton";
 
-function formatNumberToLength(numberInNm) {
-  if (numberInNm < 1000) {
-    return `${numberInNm} nm`;
-  } else if (numberInNm < 1000000) {
-    return `${Math.round(numberInNm / 1000)} μm`;
-  } else {
-    return `${Math.round(numberInNm / 1000000)} mm`;
-  }
-}
-
-function formatScale(scaleArr) {
+const unitMapping = {
+  yoctometer: "ym",
+  zeptometer: "zm",
+  attometer: "am",
+  femtometer: "fm",
+  picometer: "pm",
+  nanometer: "nm",
+  micrometer: "µm",
+  millimeter: "mm",
+  centimeter: "cm",
+  decimeter: "dm",
+  meter: "m",
+  hectometer: "hm",
+  kilometer: "km",
+  megameter: "Mm",
+  gigameter: "Gm",
+  terameter: "Tm",
+  petameter: "Pm",
+  exameter: "Em",
+  zettameter: "Zm",
+  yottameter: "Ym",
+  ångström: "Å",
+  inch: "in",
+  foot: "ft",
+  yard: "yd",
+  mile: "mi",
+  parsec: "pc",
+};
+function formatScale(scaleArr, scaleUnit) {
   if (scaleArr != null && scaleArr.length > 0) {
-    let unit = "nm³";
+    let unit = unitMapping[scaleUnit] + "³";
     let scaleArrAdjusted = scaleArr;
     const smallestValue = Math.min(...scaleArr);
-    if (smallestValue > 1000000) {
+    if (scaleUnit == "nanometer" && smallestValue > 1000000) {
       scaleArrAdjusted = scaleArr.map((value) => value / 1000000);
       unit = "mm³";
-    } else if (smallestValue > 1000) {
+    } else if (scaleUnit == "nanometer" && smallestValue > 1000) {
       scaleArrAdjusted = scaleArr.map((value) => value / 1000);
       unit = "μm³";
     }
@@ -28,6 +46,16 @@ function formatScale(scaleArr) {
     return `${scaleArrRounded.join(" × ")} ${unit}/voxel`;
   } else {
     return "";
+  }
+}
+
+function formatNumberToLength(numberInNm) {
+  if (numberInNm < 1000) {
+    return `${numberInNm} nm`;
+  } else if (numberInNm < 1000000) {
+    return `${Math.round(numberInNm / 1000)} μm`;
+  } else {
+    return `${Math.round(numberInNm / 1000000)} mm`;
   }
 }
 
@@ -58,8 +86,13 @@ function aggregateBoundingBox(boundingBoxes) {
   return { min, max };
 }
 
-function getDatasetExtentAsString(layer, scale) {
-  const { min, max } = aggregateBoundingBox([layer.boundingBox]);
+function getDatasetExtentAsString(layer, dataset) {
+  const datasetLayers = dataset.dataSource.dataLayers.filter(
+    (layer) => !layer.name.includes("prediction")
+  );
+  const allBoundingBoxes = datasetLayers.map((layer) => layer.boundingBox);
+  const unifiedBoundingBoxes = aggregateBoundingBox(allBoundingBoxes);
+  const { min, max } = unifiedBoundingBoxes;
   const extentInVoxel = {
     topLeft: min,
     width: max[0] - min[0],
@@ -68,6 +101,8 @@ function getDatasetExtentAsString(layer, scale) {
     min,
     max,
   };
+  const scale = dataset.dataSource.scale.factor;
+  let extentUnit = dataset.dataSource.scale.unit;
   const topLeft = extentInVoxel.topLeft.map((val, index) => val * scale[index]);
   const extent = {
     topLeft,
@@ -75,9 +110,27 @@ function getDatasetExtentAsString(layer, scale) {
     height: extentInVoxel.height * scale[1],
     depth: extentInVoxel.depth * scale[2],
   };
-  return `${formatNumberToLength(extent.width)} × ${formatNumberToLength(
-    extent.height
-  )} × ${formatNumberToLength(extent.depth)}`;
+  if (
+    extentUnit == "nanometer" &&
+    (extent.width > 1000000 ||
+      extent.height > 1000000 ||
+      extent.depth > 1000000)
+  ) {
+    extent.width /= 1000000;
+    extent.height /= 1000000;
+    extent.depth /= 1000000;
+    extentUnit = "millimeter";
+  }
+  if (
+    extentUnit == "nanometer" &&
+    (extent.width > 1000 || extent.height > 1000 || extent.depth > 1000)
+  ) {
+    extent.width /= 1000;
+    extent.height /= 1000;
+    extent.depth /= 1000;
+    extentUnit = "micrometer";
+  }
+  return `${extent.width} × ${extent.height} × ${extent.depth} ${unitMapping[extentUnit]}³`;
 }
 
 export default function ImageItem({ dataset }) {
@@ -115,9 +168,12 @@ export default function ImageItem({ dataset }) {
       <div className="dataset-item-content">
         <h3>{dataset.name}</h3>
         <p>
-          {getDatasetExtentAsString(colorLayer, dataset.dataSource.scale)}
+          {getDatasetExtentAsString(colorLayer, dataset)}
           <br />
-          {formatScale(dataset.dataSource.scale)}
+          {formatScale(
+            dataset.dataSource.scale.factor,
+            dataset.dataSource.scale.unit
+          )}
         </p>
         <p>
           <a className="wk-button" title="Open in WEBKNOSSOS" href={wkUrl}>
