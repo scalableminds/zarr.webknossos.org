@@ -157,7 +157,7 @@ export default function ImageItem({ dataset }) {
   const colorLayer = dataset.dataSource.dataLayers.find(
     (l) => l.category === "color" && !l.name.includes("prediction")
   );
-  const zarrUrl = `${dataset.dataStore.url}/data/zarr3_experimental/${dataset.owningOrganization}/${dataset.name}/${colorLayer.name}`;
+  const zarrUrl = `${dataset.dataStore.url}/data/zarr3_experimental/${dataset.owningOrganization}/${dataset.directoryName}/${colorLayer.name}`;
   const wkUrl = `https://webknossos.org/datasets/${dataset.id}`;
 
   return (
