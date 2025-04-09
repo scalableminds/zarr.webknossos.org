@@ -30,6 +30,11 @@ const unitMapping = {
   mile: "mi",
   parsec: "pc",
 };
+
+function roundTo(num, precision) {
+  return +(Math.round(num + `e+${precision}`) + `e-${precision}`);
+}
+
 function formatScale(scaleArr, scaleUnit) {
   if (scaleArr != null && scaleArr.length > 0) {
     let unit = unitMapping[scaleUnit] + "³";
@@ -130,6 +135,9 @@ function getDatasetExtentAsString(layer, dataset) {
     extent.depth /= 1000;
     extentUnit = "micrometer";
   }
+  extent.width = roundTo(extent.width, 2);
+  extent.height = roundTo(extent.height, 2);
+  extent.depth = roundTo(extent.depth, 2);
   return `${extent.width} × ${extent.height} × ${extent.depth} ${unitMapping[extentUnit]}³`;
 }
 
@@ -149,8 +157,8 @@ export default function ImageItem({ dataset }) {
   const colorLayer = dataset.dataSource.dataLayers.find(
     (l) => l.category === "color" && !l.name.includes("prediction")
   );
-  const zarrUrl = `${dataset.dataStore.url}/data/zarr/${dataset.owningOrganization}/${dataset.name}/${colorLayer.name}`;
-  const wkUrl = `https://webknossos.org/datasets/${dataset.owningOrganization}/${dataset.name}`;
+  const zarrUrl = `${dataset.dataStore.url}/data/zarr3_experimental/${dataset.owningOrganization}/${dataset.name}/${colorLayer.name}`;
+  const wkUrl = `https://webknossos.org/datasets/${dataset.id}`;
 
   return (
     <div className="dataset-item">
@@ -158,8 +166,8 @@ export default function ImageItem({ dataset }) {
         <a href={wkUrl}>
           <img
             src={`https://webknossos.org/api/datasets/${encodeURIComponent(
-              dataset.owningOrganization
-            )}/${encodeURIComponent(dataset.name)}/layers/${encodeURIComponent(
+              dataset.id
+            )}/layers/${encodeURIComponent(
               colorLayer.name
             )}/thumbnail?w=200&h=200`}
           />

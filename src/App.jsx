@@ -13,9 +13,9 @@ function Publication({ publication }) {
     ...publication.annotations
       .filter(
         (annotation) =>
-          annotation.dataSet.isActive && annotation.dataSet.isPublic
+          annotation.dataset.isActive && annotation.dataset.isPublic
       )
-      .map((annotation) => annotation.dataSet),
+      .map((annotation) => annotation.dataset),
   ];
 
   return (
